@@ -7,6 +7,7 @@ app.use(express.static(path.join(__dirname, 'files')));
 app.get('/movies', function (req, res) {
     const movieData = [
         {
+
             "Title": "The Thing",
             "Released": "1982-06-25",
             "Runtime": 109,
