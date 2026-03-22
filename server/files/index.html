@@ -52,46 +52,49 @@
             color: #000;
         }
     </style>
-    <script>
-        function reverseString(s) {
+
+        <script>
+
+            function reverseString(s) {
             return s.split("").reverse().join("");
         }
 
-        window.onload = function () {
-            const xhr = new XMLHttpRequest()
+            window.onload = function () {
+            const xhr = new XMLHttpRequest();
+
             xhr.onload = function () {
-                const bodyElement = document.querySelector("body")
-                if (xhr.status == 200) {
-		            /* Part 2: Build the HTML elements here and append them to the body */
+            const bodyElement = document.querySelector("body");
 
-                    const movies = JSON.parse(xhr.responseText);
+            if (xhr.status === 200) {
 
-                    // 2. Über jeden Film in der Liste drübergehen
-                    movies.forEach(movie => {
-                        // Ein neues <article> Element erstellen (Semantisches HTML!)
-                        const movieArticle = document.createElement('article');
+            const movies = JSON.parse(xhr.responseText);
 
-                        // Den Inhalt für das Element definieren (Titel, Bild, Genre, Rating)
-                        movieArticle.innerHTML = `
-            <img src="${movie.Poster}" alt="${movie.Title} Poster" style="width: 150px; border-radius: 8px;">
-            <div>
-                <h2 style="margin-top: 0;">${movie.Title}</h2>
-                <p><strong>Genre:</strong> ${movie.Genres.join(', ')}</p>
-                <p><strong>Handlung:</strong> ${movie.Plot}</p>
-                <p><strong>Bewertung:</strong> ⭐ ${movie.imdbRating} / 10</p>
-                <p><strong>Dauer:</strong> ${movie.Runtime} min</p>
-            </div>
-        `;
 
-                        bodyElement.appendChild(movieArticle);
-                    });
-                } else {
-                    bodyElement.append("Daten konnten nicht geladen werden, Status " + xhr.status + " - " + xhr.statusText)
-                }
-            }
-            xhr.open("GET", "/movies")
-            xhr.send()
+            movies.forEach(movie => {
+            const movieArticle = document.createElement('article');
+
+
+            movieArticle.innerHTML = `
+                        <img src="${movie.Poster}" alt="${movie.Title} Poster">
+                        <div>
+                            <h2>${movie.Title}</h2>
+                            <p><strong>Genre:</strong> ${movie.Genres.join(', ')}</p>
+                            <p><strong>Handlung:</strong> ${movie.Plot}</p>
+                            <p><strong>Bewertung:</strong> ⭐ ${movie.imdbRating} / 10</p>
+                            <p><strong>Dauer:</strong> ${movie.Runtime} min</p>
+                        </div>
+                    `;
+
+            bodyElement.appendChild(movieArticle);
+        });
+        } else {
+            bodyElement.append("Fehler beim Laden der Filme: " + xhr.status);
         }
+        };
+
+            xhr.open("GET", "/movies");
+            xhr.send();
+        };
     </script>
 
 </head>
