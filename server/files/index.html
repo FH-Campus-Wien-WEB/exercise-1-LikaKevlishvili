@@ -6,7 +6,51 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Movies!</title>
     <style>
-        /* Part 3: Your styling goes here */
+
+        body {
+            font-family: 'Trebuchet MS', sans-serif;
+            background-color: #f0f2f5;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 40px;
+        }
+
+        article {
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+            padding: 20px;
+            max-width: 800px;
+            display: flex; /* Poster links, Text rechts */
+            gap: 25px;
+            transition: transform 0.2s;
+        }
+
+        article:hover {
+            transform: scale(1.02);
+        }
+
+        img {
+            width: 180px;
+            border-radius: 8px;
+            object-fit: cover;
+        }
+
+        h2 {
+            margin-top: 0;
+            color: #1a1a1a;
+        }
+
+        p {
+            line-height: 1.6;
+            color: #444;
+        }
+
+        strong {
+            color: #000;
+        }
     </style>
     <script>
         function reverseString(s) {
@@ -18,8 +62,29 @@
             xhr.onload = function () {
                 const bodyElement = document.querySelector("body")
                 if (xhr.status == 200) {
-		            /* Part 2: Build the HTML elements here and append them to the body */ 
-                    bodyElement.append(reverseString(xhr.responseText))
+		            /* Part 2: Build the HTML elements here and append them to the body */
+
+                    const movies = JSON.parse(xhr.responseText);
+
+                    // 2. Über jeden Film in der Liste drübergehen
+                    movies.forEach(movie => {
+                        // Ein neues <article> Element erstellen (Semantisches HTML!)
+                        const movieArticle = document.createElement('article');
+
+                        // Den Inhalt für das Element definieren (Titel, Bild, Genre, Rating)
+                        movieArticle.innerHTML = `
+            <img src="${movie.Poster}" alt="${movie.Title} Poster" style="width: 150px; border-radius: 8px;">
+            <div>
+                <h2 style="margin-top: 0;">${movie.Title}</h2>
+                <p><strong>Genre:</strong> ${movie.Genres.join(', ')}</p>
+                <p><strong>Handlung:</strong> ${movie.Plot}</p>
+                <p><strong>Bewertung:</strong> ⭐ ${movie.imdbRating} / 10</p>
+                <p><strong>Dauer:</strong> ${movie.Runtime} min</p>
+            </div>
+        `;
+
+                        bodyElement.appendChild(movieArticle);
+                    });
                 } else {
                     bodyElement.append("Daten konnten nicht geladen werden, Status " + xhr.status + " - " + xhr.statusText)
                 }
