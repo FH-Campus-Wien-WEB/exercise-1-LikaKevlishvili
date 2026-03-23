@@ -19,11 +19,11 @@
         article {
             background-color: white;
             border-radius: 12px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
             margin-bottom: 30px;
             padding: 20px;
             max-width: 800px;
-            display: flex; /* Poster links, Text rechts */
+            display: flex;
             gap: 25px;
             transition: transform 0.2s;
         }
@@ -53,44 +53,44 @@
         }
     </style>
 
-        <script>
+    <script>
 
-            function reverseString(s) {
+        function reverseString(s) {
             return s.split("").reverse().join("");
         }
 
-            window.onload = function () {
+        window.onload = function () {
             const xhr = new XMLHttpRequest();
 
             xhr.onload = function () {
-            const bodyElement = document.querySelector("body");
+                const bodyElement = document.querySelector("body");
 
-            if (xhr.status === 200) {
+                if (xhr.status === 200) {
 
-            const movies = JSON.parse(xhr.responseText);
-
-
-            movies.forEach(movie => {
-            const movieArticle = document.createElement('article');
+                    const movies = JSON.parse(xhr.responseText);
 
 
-            movieArticle.innerHTML = `
+                    movies.forEach(movie => {
+                        const movieArticle = document.createElement('article');
+
+
+                        movieArticle.innerHTML = `
                         <img src="${movie.Poster}" alt="${movie.Title} Poster">
                         <div>
                             <h2>${movie.Title}</h2>
                             <p><strong>Genre:</strong> ${movie.Genres.join(', ')}</p>
-                            <p><strong>Handlung:</strong> ${movie.Plot}</p>
-                            <p><strong>Bewertung:</strong> ⭐ ${movie.imdbRating} / 10</p>
-                            <p><strong>Dauer:</strong> ${movie.Runtime} min</p>
+                            <p><strong>Plot:</strong> ${movie.Plot}</p>
+                            <p><strong>Raiting:</strong> ⭐ ${movie.imdbRating} / 10</p>
+                            <p><strong>Runtime:</strong> ${movie.Runtime} min</p>
                         </div>
                     `;
 
-            bodyElement.appendChild(movieArticle);
-        });
-        } else {
-            bodyElement.append("Fehler beim Laden der Filme: " + xhr.status);
-        }
-        };
+                        bodyElement.appendChild(movieArticle);
+                    });
+                } else {
+                    bodyElement.append("Error loading the movies: " + xhr.status);
+                }
+            };
 
             xhr.open("GET", "/movies");
             xhr.send();
