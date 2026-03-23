@@ -1,105 +1,163 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Movies!</title>
-    <style>
+    <title>Movie Overview</title>
 
+    <style>
         body {
-            font-family: 'Trebuchet MS', sans-serif;
-            background-color: #f0f2f5;
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-color: #f2f2f2;
+        }
+
+        h1 {
+            text-align: center;
+            margin: 30px 0;
+        }
+
+        #body {
             display: flex;
             flex-direction: column;
             align-items: center;
-            padding: 40px;
+            gap: 30px;
+            padding-bottom: 40px;
         }
 
-        article {
-            background-color: white;
+        .movie-card {
+            width: 500px;
+            background-color: #d3d3d3;
+            border-radius: 18px;
+            padding: 16px;
+            box-sizing: border-box;
+        }
+
+        .movie-card img {
+            width: 270px;
             border-radius: 12px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-            margin-bottom: 30px;
-            padding: 20px;
-            max-width: 800px;
-            display: flex;
-            gap: 25px;
-            transition: transform 0.2s;
+            display: block;
+            margin-bottom: 18px;
         }
 
-        article:hover {
-            transform: scale(1.02);
+        .movie-card h2 {
+            font-size: 22px;
+            margin: 0 0 12px 0;
         }
 
-        img {
-            width: 180px;
+        .movie-meta {
+            margin-bottom: 12px;
+            font-size: 16px;
+        }
+
+        .genre-container {
+            margin-bottom: 16px;
+        }
+
+        .genre-tag {
+            display: inline-block;
+            padding: 5px 10px;
+            margin-right: 6px;
+            margin-bottom: 6px;
+            border: 1px solid #444;
             border-radius: 8px;
-            object-fit: cover;
+            background-color: #cfcfcf;
+            font-size: 14px;
         }
 
-        h2 {
+        .movie-plot {
+            margin-bottom: 20px;
+            line-height: 1.4;
+        }
+
+        .movie-card h3 {
+            margin-top: 20px;
+            margin-bottom: 8px;
+            font-size: 18px;
+        }
+
+        .movie-card ul {
             margin-top: 0;
-            color: #1a1a1a;
+            margin-bottom: 18px;
         }
 
-        p {
-            line-height: 1.6;
-            color: #444;
+        .movie-card li {
+            margin-bottom: 4px;
         }
 
-        strong {
-            color: #000;
+        .rating {
+            margin-top: 10px;
+            font-size: 16px;
         }
     </style>
+</head>
+<body>
 
-    <script>
+<h1>Movie Overview</h1>
+<main id="body"></main>
 
-        function reverseString(s) {
-            return s.split("").reverse().join("");
-        }
+<script>
+    const bodyElement = document.getElementById("body");
 
-        window.onload = function () {
-            const xhr = new XMLHttpRequest();
+    const xhr = new XMLHttpRequest();
+    xhr.open("GET", "/movies");
 
-            xhr.onload = function () {
-                const bodyElement = document.querySelector("body");
+    xhr.onload = function () {
+        if (xhr.status === 200) {
+            const movies = JSON.parse(xhr.responseText);
 
-                if (xhr.status === 200) {
+            movies.forEach(movie => {
+                const movieArticle = document.createElement("article");
+                movieArticle.classList.add("movie-card");
 
-                    const movies = JSON.parse(xhr.responseText);
+                movieArticle.innerHTML = `
+                        <img src="${movie.Poster}" alt="${movie.Title} poster">
 
-
-                    movies.forEach(movie => {
-                        const movieArticle = document.createElement('article');
-
-
-                        movieArticle.innerHTML = `
-                        <img src="${movie.Poster}" alt="${movie.Title} Poster">
                         <div>
                             <h2>${movie.Title}</h2>
-                            <p><strong>Genre:</strong> ${movie.Genres.join(', ')}</p>
-                            <p><strong>Plot:</strong> ${movie.Plot}</p>
-                            <p><strong>Raiting:</strong> ⭐ ${movie.imdbRating} / 10</p>
-                            <p><strong>Runtime:</strong> ${movie.Runtime} min</p>
+
+                            <p class="movie-meta">
+                                Runtime ${movie.Runtime} min • Released on ${movie.Released}
+                            </p>
+
+                            <div class="genre-container">
+                                ${movie.Genres.map(genre => `<span class="genre-tag">${genre}</span>`).join("")}
+                            </div>
+
+                            <p class="movie-plot">${movie.Plot}</p>
+
+                            <h3>Director</h3>
+                            <ul>
+                                ${movie.Directors.map(director => `<li>${director}</li>`).join("")}
+                            </ul>
+
+                            <h3>Writers</h3>
+                            <ul>
+                                ${movie.Writers.map(writer => `<li>${writer}</li>`).join("")}
+                            </ul>
+
+                            <h3>Actors</h3>
+                            <ul>
+                                ${movie.Actors.map(actor => `<li>${actor}</li>`).join("")}
+                            </ul>
+
+                            <p class="rating"><strong>IMDb Rating:</strong> ⭐ ${movie.imdbRating} / 10</p>
                         </div>
                     `;
 
-                        bodyElement.appendChild(movieArticle);
-                    });
-                } else {
-                    bodyElement.append("Error loading the movies: " + xhr.status);
-                }
-            };
+                bodyElement.append(movieArticle);
+            });
+        } else {
+            bodyElement.append("Error loading the movies: " + xhr.status);
+        }
+    };
 
-            xhr.open("GET", "/movies");
-            xhr.send();
-        };
-    </script>
+    xhr.onerror = function () {
+        bodyElement.append("Network error while loading movies.");
+    };
 
-</head>
+    xhr.send();
+</script>
 
-<body>
 </body>
 </html>
-
